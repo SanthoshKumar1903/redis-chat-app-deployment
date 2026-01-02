@@ -25,18 +25,19 @@ pipeline {
                 sh """
                 aws ecr get-login-password --region \$AWS_REGION \
                 | docker login --username AWS --password-stdin \$ECR_REGISTRY
+                echo "ECR login Successfull"
                 """
-                echo "ECR Login failed: ${e.message}"
-                error("ECR Authentication failed")
             }
         }
 
         stage('Build & Publish Docker Image') {
             steps {
                 sh """
-                docker build -t \$ECR_REPO_NAME .
-                docker tag \$ECR_REPO_NAME:latest \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
+                docker build -t \$ECR_REPO_NAME:\$BUILD_NUMBER .
+                docker tag \$ECR_REPO_NAME:\$BUILD_NUMBER \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
                 docker push \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
+                docker push \$ECR_REGISTRY/\$ECR_REPO_NAME:\$BUILD_NUMBER
+                echo "Build and push completed"
                 """
             }
         }
