@@ -22,16 +22,13 @@ pipeline {
 
         stage('Authenticate with ECR') {
             steps {
-                try {
-                    sh """
-                    aws ecr get-login-password --region \$AWS_REGION \
-                    | docker login --username AWS --password-stdin \$ECR_REGISTRY
-                    """
-                    }
-                } catch (Exception e) {
-                    echo "ECR Login failed: ${e.message}"
-                    error("ECR Authentication failed")
-                }
+                sh """
+                aws ecr get-login-password --region \$AWS_REGION \
+                | docker login --username AWS --password-stdin \$ECR_REGISTRY
+                """
+                echo "ECR Login failed: ${e.message}"
+                error("ECR Authentication failed")
+            }
         }
 
         stage('Build & Publish Docker Image') {
