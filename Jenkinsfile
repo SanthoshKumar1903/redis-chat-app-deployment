@@ -24,8 +24,8 @@ pipeline {
             steps {
                 try {
                     sh """
-                    aws ecr get-login-password --region $AWS_REGION \
-                    | docker login --username AWS --password-stdin $ECR_REGISTRY
+                    aws ecr get-login-password --region \$AWS_REGION \
+                    | docker login --username AWS --password-stdin \$ECR_REGISTRY
                     """
                     }
                 } catch (Exception e) {
@@ -37,9 +37,9 @@ pipeline {
         stage('Build & Publish Docker Image') {
             steps {
                 sh """
-                docker build -t $ECR_REPO_NAME .
-                docker tag $ECR_REPO_NAME:latest $ECR_REGISTRY/$ECR_REPO_NAME:latest
-                docker push $ECR_REGISTRY/$ECR_REPO_NAME:latest
+                docker build -t \$ECR_REPO_NAME .
+                docker tag \$ECR_REPO_NAME:latest \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
+                docker push \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
                 """
             }
         }
