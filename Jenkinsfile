@@ -35,8 +35,6 @@ pipeline {
         stage('Build & Publish Docker Image') {
             steps {
                 sh """
-                aws ecr describe-repositories --repository-names ${ECR_REPO_NAME} --region ${AWS_REGION} || \\
-                aws ecr create-repository --repository-name ${ECR_REPO_NAME} --region ${AWS_REGION}
                 docker build -t ${ECR_REPO_NAME}:${BUILD_NUMBER} .
                 docker tag ${ECR_REPO_NAME}:${BUILD_NUMBER} ${ECR_REGISTRY}/${ECR_REPO_NAME}:latest
                 docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:latest
