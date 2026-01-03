@@ -25,8 +25,8 @@ pipeline {
         stage('Authenticate with ECR') {
             steps {
                 sh """
-                aws ecr get-login-password --region \$AWS_REGION \
-                | docker login --username AWS --password-stdin \$ECR_REGISTRY
+                aws ecr get-login-password --region ${AWS_REGION} \
+                | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                 echo "ECR login Successfull"
                 """
             }
@@ -35,12 +35,12 @@ pipeline {
         stage('Build & Publish Docker Image') {
             steps {
                 sh """
-                aws ecr describe-repositories --repository-names \$ECR_REPO_NAME --region \$AWS_REGION || \\
-                aws ecr create-repository --repository-name \$ECR_REPO_NAME --region \$AWS_REGION
-                docker build -t \$ECR_REPO_NAME:\$BUILD_NUMBER .
-                docker tag \$ECR_REPO_NAME:\$BUILD_NUMBER \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
-                docker push \$ECR_REGISTRY/\$ECR_REPO_NAME:latest
-                docker push \$ECR_REGISTRY/\$ECR_REPO_NAME:\$BUILD_NUMBER
+                aws ecr describe-repositories --repository-names --region ${AWS_REGION} || \\
+                aws ecr create-repository --repository-name ${ECR_REPO_NAME} --region ${AWS_REGION}
+                docker build -t ${ECR_REPO_NAME}:${BUILD_NUMBER} .
+                docker tag ${ECR_REPO_NAME}:${BUILD_NUMBER} ${ECR_REGISTRY}/${ECR_REPO_NAME:}latest
+                docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:latest
+                docker push ${ECR_REGISTRY}/${ECR_REPO_NAME}:${BUILD_NUMBER}
                 echo "Build and push completed"
                 """
             }
