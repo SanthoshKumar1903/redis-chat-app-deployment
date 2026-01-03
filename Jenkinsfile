@@ -1,5 +1,7 @@
 pipeline {
-    agent { label: "Bond" }
+    agent { 
+        label 'Bond'
+    }
 
     triggers {
         githubPush()
