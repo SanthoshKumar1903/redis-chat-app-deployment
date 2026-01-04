@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-chat-app
+  template:
+    metadata:
+      labels:
+        app: my-chat-app
+    spec:
+      containers:
+        - name: my-chat-app
+          image: 477059411238.dkr.ecr.eu-east-1.amazonaws.com/python-chat-app:latest 
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REDIS_ENDPOINT_URL
+              value: "redis-service:6379"

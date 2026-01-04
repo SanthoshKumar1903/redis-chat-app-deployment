@@ -37,5 +37,17 @@ pipeline {
                 """
             }
         }
+
+        stage('Deploy to kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-admin',variable: 'KUBECONFIG')]) {
+                    sh """
+                      kubectl version --client
+                      kubectl get nodes
+                      kubectl apply -f k8s/
+                    """
+                }
+            }
+        }
     }
 }
