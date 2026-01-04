@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: my-chat-app
-          image: 477059411238.dkr.ecr.eu-east-1.amazonaws.com/python-chat-app:latest 
+          image: 477059411238.dkr.ecr.us-east-1.amazonaws.com/python-chat-app:latest 
           ports:
             - containerPort: 8080
           env:
