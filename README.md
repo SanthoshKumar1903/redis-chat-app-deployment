@@ -6,6 +6,52 @@ This project intentionally uses **manual infrastructure setup (no EKS)** to unde
 
 ---
 
+## Architecture & CI/CD Evidence
+
+### CI/CD Pipeline Execution (Jenkins)
+
+![Jenkins Pipeline - Successful Build](./images/build-success-jenkins.png)
+
+This shows a full Jenkins declarative pipeline with stages for:
+- SCM checkout
+- Docker image build
+- Push to AWS ECR
+- Deployment to Kubernetes
+
+---
+
+### Jenkins Agent Configuration
+
+![Jenkins Agent Node](./images/Jenkins-agent-2.png)
+
+A dedicated Jenkins agent is used instead of running builds on the controller. This follows Jenkins best practices and avoids overloading the master node.
+
+---
+
+### Docker Images in AWS ECR (Private Registry)
+
+![AWS ECR Images](./images/ecr-build-images.png)
+
+Each successful pipeline run produces a uniquely tagged Docker image pushed to **AWS ECR (private)**. Tags map directly to Jenkins build numbers, ensuring traceability.
+
+---
+
+### Kubernetes Cluster Health & Networking
+
+![Kubernetes Nodes and Calico Pods](./images/k8s-networking.png)
+
+All control-plane and worker nodes are in `Ready` state after installing **Calico v3.30.3**. This confirms correct CNI installation and pod networking.
+
+---
+
+### Kubernetes Access from Jenkins Agent
+
+![kubectl from Jenkins Agent](./images/jen-agent-k8s.png)
+
+The Jenkins agent is configured with a valid kubeconfig, allowing it to deploy workloads directly into the Kubernetes cluster.
+
+---
+
 ## Overview
 
 * **Application**: Python Flask + Socket.IO (real-time chat)
@@ -188,17 +234,6 @@ kubectl get pods
 
 ## Troubleshooting
 
-### Nodes Stuck in `NotReady`
-
-**Cause**: CNI plugin not installed
-
-**Fix**:
-
-* Install Calico
-* Wait for `calico-node` pods to be running
-
----
-
 ### `ImagePullBackOff`
 
 **Cause**:
@@ -210,4 +245,3 @@ kubectl get pods
 * Recreate `ecr-secret`
 * Restart the affected deployment
 
----
